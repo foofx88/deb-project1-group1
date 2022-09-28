@@ -1,0 +1,9 @@
+extract: 
+  model_path: "dvd_rental/models/extract"
+  log_path: "dvd_rental/log/extract_log"
+load: 
+  chunksize: 1000
+transform: 
+  model_path: "dvd_rental/models/transform"
+meta: 
+  log_table: "pipeline_logs"
