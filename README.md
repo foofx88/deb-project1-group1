@@ -16,6 +16,8 @@ To identify the best temperature in each state, including best times for beach v
 ## Source datasets 
 [WeatherApi](https://www.weatherapi.com/)
 
+Historic Tables, Cities Tables and Forecast Tables
+
 ## Breakdown of tasks 
 Our Team consist of 4 members and here are each member's contributions:
 
@@ -23,16 +25,16 @@ Pull Request Review - Muhammad
 
 Extract - Rohith
 
-Transform - Everyone
+Transform - Luke and FX
 
-Load - Everyone
+Load - Rohith and Muhammad
 
-Docker - Image Build - Everyone
+Docker - Image Build - Luke and Muhammad
 
-Testing (PyTest) - FX
+Testing (PyTest) - FX and Rohith
 
-Log (MetaData Logging) - FX
+Log (MetaData Logging) - FX and Rohith
 
 AWS related Tasks (IAM, DB, Cluster Setup) - Luke
 
-Documentation - FX
+Documentation - FX with everyone chipping in
