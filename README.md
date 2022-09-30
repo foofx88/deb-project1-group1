@@ -19,8 +19,8 @@
         <li><a href="#load">Load</a></li>
       </ul>
     </li>
-    <li><a href="#discussion">Results and Discussion</a></li>
-    <li><a href="#contributors">Contributors</a></li>
+    <li><a href="#discussion">Discussion, Lesson Learnt and Future Improvement</a></li>
+    <li><a href="#contributors">Contributors & Contributions</a></li>
   </ol>
 </details>
 
@@ -152,7 +152,7 @@ Load Process here
 
 <hr style="background:#3944BC;">
 <!-- CONTRIBUTORS -->
-<h2 id="contributors">Contributors and Contributions</h2>
+<h2 id="contributors">Contributors & Contributions</h2>
 
 <p>
   <i>All participants in this project are professional individuals enrolled in <a href="https://www.dataengineercamp.com">Data Engineering Camp</a> </i> <br> <br>
