@@ -1,12 +1,10 @@
-from database.postgres import PostgresDB
+from database import postgres
 import datetime as dt 
 from sqlalchemy import Table, Column, String, MetaData
 from sqlalchemy import insert, select, func
 
-class IncrementalLogging():
 
-    def __init__(self, db_target):
-        self.engine = PostgresDB.create_pg_engine(db_target=db_target)
+class IncrementalLogging():
     
     def create_target_table_if_not_exists(self, db_table:str)->Table:
         meta = MetaData()
