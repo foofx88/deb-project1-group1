@@ -18,7 +18,7 @@ class PostgresDB():
         connection_url = URL.create(
             drivername = "postgresql+pg8000", 
             username = db_user,
-            password = 'v3h9vJ8fG&AqOMNi',
+            password = 'v3h9vJ8fG&AqOMNi', # Passing the db_password as a string as unable to get value from environment variable
             host = db_server_name, 
             port = 5432,
             database = db_database_name, 
