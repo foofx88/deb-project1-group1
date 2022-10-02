@@ -4,8 +4,9 @@ import jinja2 as j2
 
 class Transform():
 
-    def __init__(self, model, engine, models_path="models"):
-        self.model = model 
+    def __init__(self, model, engine, models_path="models", source_table=""):
+        self.model = model
+        self.source_table = source_table # Added source table
         self.engine = engine 
         self.models_path = models_path
     
@@ -23,7 +24,7 @@ class Transform():
                 raw_sql = f.read()
 
             # parse sql using jinja 
-            parsed_sql = j2.Template(raw_sql).render(target_table = self.model, engine=self.engine)
+            parsed_sql = j2.Template(raw_sql).render(target_table = self.model, source_table =  self.source_table, engine=self.engine) # Added source table
 
             # execute parsed sql 
             result = self.engine.execute(parsed_sql)
