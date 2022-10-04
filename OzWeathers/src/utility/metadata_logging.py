@@ -5,8 +5,8 @@ from sqlalchemy import insert, select, func
 
 class MetadataLogging():
 
-    def __init__(self, db_target):
-        self.engine = PostgresDB.create_pg_engine(db_target=db_target)
+    def __init__(self, engine):
+        self.engine = engine
     
     def create_target_table_if_not_exists(self, db_table:str)->Table:
         meta = MetaData()

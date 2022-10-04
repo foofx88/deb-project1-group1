@@ -1,4 +1,3 @@
-# from dvd_rental.pipeline.extract_load_pipeline import ExtractLoad
 from graphlib import TopologicalSorter
 import os 
 from database.postgres import PostgresDB
@@ -16,9 +15,26 @@ def run_pipeline():
     run_log = StringIO()
     logging.basicConfig(stream=run_log,level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
     
+    # set up source db engine
+    db_user = os.environ.get("source_db_user")
+    db_password = os.environ.get("source_db_password")
+    db_server_name = os.environ.get("source_db_server_name")
+    db_database_name = os.environ.get("source_db_database_name")        
+    se = PostgresDB(db_user=db_user, db_password=db_password, db_server_name=db_server_name, db_database_name=db_database_name)
+    source_engine = se.create_pg_engine()
+
+    # set up target db engine
+    db_user = os.environ.get("target_db_user")
+    db_password = os.environ.get("target_db_password")
+    db_server_name = os.environ.get("target_db_server_name")
+    db_database_name = os.environ.get("target_db_database_name")        
+    te = PostgresDB(db_user=db_user, db_password=db_password, db_server_name=db_server_name, db_database_name=db_database_name)
+    target_engine = te.create_pg_engine()
+
+
     # set up metadata logger 
-    metadata_logger = MetadataLogging(db_target="target")
-    
+    metadata_logger = MetadataLogging(engine=target_engine)
+
     
     with open("weatherapi/config.yaml") as stream:
         config = yaml.safe_load(stream)
@@ -37,32 +53,11 @@ def run_pipeline():
     
         # configure pipeline 
         logging.info("Getting config variables")
-        # path_extract_model = config["extract"]["model_path"]
-        # path_extract_log = config["extract"]["log_path"]
         path_transform_model = config["transform"]["model_path"]
-        # chunksize = config["load"]["chunksize"]
-        # set up database 
-        source_engine = PostgresDB.create_pg_engine(db_target="source")
-        target_engine = PostgresDB.create_pg_engine(db_target="target")
         
         # build dag 
         dag = TopologicalSorter()
-        # nodes_extract_load = []
-        
-        # logging.info("Creating extract and load nodes")
-        # extract_load nodes 
-        # for file in os.listdir(path_extract_model):
-        #     node_extract_load = ExtractLoad(
-        #         source_engine=source_engine, 
-        #         target_engine=target_engine,
-        #         table_name=file.replace(".sql", ""), 
-        #         path=path_extract_model, 
-        #         path_extract_log=path_extract_log,
-        #         chunksize=chunksize
-        #     )
-        #     dag.add(node_extract_load)
-        #     nodes_extract_load.append(node_extract_load)
-        
+               
         logging.info("Creating transform nodes")
         # transform nodes  
         node_staging_forecast = Transform(model="staging_forecast", engine=target_engine, models_path=path_transform_model)
