@@ -1,0 +1,4 @@
+transform: 
+  model_path: "weatherapi/models/transform"
+meta: 
+  log_table: "pipeline_logs"

@@ -4,6 +4,9 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, JSON
 from sqlalchemy import insert, select, func
 
 class MetadataLogging():
+
+    def __init__(self, engine):
+        self.engine = engine
     
     def create_target_table_if_not_exists(self, db_table:str)->Table:
         meta = MetaData()
