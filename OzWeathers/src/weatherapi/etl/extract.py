@@ -36,14 +36,14 @@ class Extract():
         else: 
             print(response)
 
-        #this extract forecast data for the next 7 days
+#this extract forecast data for the next 7 days
     def extract_weather_forecast(self, key):
         df_forecast = None
         get_cities = Extract.extract_cities()
         cities = get_cities['city'].tolist()
         base_url = "http://api.weatherapi.com/v1/forecast.json?aqi=no&alerts=no"
         headers = {
-                    "key": key #"2e6f2448e0854266b1d123656222709" is this how to we replace this? read from the bat file.
+                    "key": key
                 }
         for city in cities:
             params = {
@@ -163,20 +163,7 @@ class Extract():
             logging.error(f"Request to list object from S3 has failed. Status - {status}")
 
         return True
-    
-#we still need to do the incremental through the api 
-    """
-    To DO:
-    1. write out a function to check incremental values for read from the raw_historic & to read from the raw_cities table. 
-        Write is_incremental function that uses the other 2 s3 read/write function
-    2. Explore the api call limit per key (WeatherAPI, min 1 year, max 2 years if ok)
-            3. Do we have an s3 bucket yet? (Create an S3 bucket) -DONE!
-            4. read cities from API for now. DONE!
-            5. create new branch for Luke and I to push into (Main2)
-            
-    """
-    #table_name would be all the raw table names, or can be source_name (cities, forecast, historic)
-    #incremental_value to be obtained from last updated
+
     def extract_from_api (self, table_name, key, bucket, filename, aws_accessid, awssecretkey, regionname)->pd.DataFrame:
         try:
             if table_name == "raw_cities":
@@ -186,7 +173,6 @@ class Extract():
                 df= Extract.extract_weather_forecast(key=key)
                 logging.info(f"Successfully extracted table: {table_name}, rows extracted: {len(df)}")
             elif table_name =="raw_historic":
-                #check if it is initial load by checking the log files
                 latest_date = Extract.get_incremental_value(bucket=bucket, aws_accessid=aws_accessid, awssecretkey=awssecretkey, regionname=regionname, filename=filename)
                 extracted = Extract.extract_weather_historic(key, latest_date)
                 df = extracted
