@@ -138,8 +138,8 @@ class Extract():
                         get_that_file = s3.get_object(Bucket=bucket, Key=file_name)
                         df_existing_log = pd.read_csv(get_that_file.get("Body"))
                         df_incremental_log = pd.DataFrame(data={
-                        "log_date": [dt.datetime.now().strftime("%Y-%m-%d")], 
-                        "incremental_value": [incremental_value]})
+                        "log_date": dt.now().strftime("%Y-%m-%d"), 
+                        "incremental_value": incremental_value})
                         df_updated_incremental_log = pd.concat([df_existing_log,df_incremental_log])
                         df_updated_incremental_log.to_csv(file_name, index=False)
                         write_into_s3 = s3.upload_file(file_name, Bucket=bucket, Key=file_name)
@@ -150,8 +150,8 @@ class Extract():
                                 
                 else: 
                     df_incremental_log = pd.DataFrame(data={
-                    "log_date": [dt.datetime.now().strftime("%Y-%m-%d")], 
-                    "incremental_value": [incremental_value]})
+                    "log_date": dt.now().strftime("%Y-%m-%d"), 
+                    "incremental_value": incremental_value})
                     df_updated_incremental_log = pd.concat([df_existing_log,df_incremental_log])
                     df_updated_incremental_log.to_csv(file_name, index=False)
                     try:
