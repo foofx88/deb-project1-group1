@@ -8,7 +8,7 @@ from sqlalchemy.dialects import postgresql
 
 class Load():
 
-    def __init__(self, df:pd.DataFrame, key_columns:list, database_engine:str, database_table_name:str):
+    def __init__(self, df:pd.DataFrame, database_engine:str, database_table_name:str, key_columns:list=None):
         self.df=df
         self.key_columns=key_columns
         self.database_engine=database_engine
