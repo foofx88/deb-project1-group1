@@ -1,6 +1,6 @@
-from database.postgres import PostgresDB
+from database import postgres
 import datetime as dt 
-from sqlalchemy import Table, Column, Integer, String, MetaData, Float, JSON
+from sqlalchemy import Table, Column, Integer, String, MetaData, JSON
 from sqlalchemy import insert, select, func
 
 class MetadataLogging():
