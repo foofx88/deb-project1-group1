@@ -1,4 +1,7 @@
+extract:
+  aws_bucket:  'ozweather-logs'
+  aws_log_file: 'historic_logs.csv'
 transform: 
-  model_path: "weatherapi/models/transform"
+  model_path: 'weatherapi/models/transform'
 meta: 
-  log_table: "pipeline_logs"
+  log_table: 'pipeline_logs'

@@ -1,23 +1,21 @@
-
 import requests
 from boto3 import client
-import io
 import pandas as pd
-import jinja2 as j2 
 import logging 
-import os 
-from datetime import timedelta, datetime as dt 
+from datetime import timedelta, datetime as dt
+import time
 
 pd.options.mode.chained_assignment = None
 
 class Extract():
 
-    def __init__(self,table_name, engine, key):
-        self.engine = engine
-        self.table_name = table_name
-        self.key = key
+    # def __init__(self,table_name, engine, key):
+    #     self.engine = engine
+    #     self.table_name = table_name
+    #     self.key = key
 
-    def extract_cities(self):
+    # @staticmethod
+    def extract_cities():
         url = "https://countriesnow.space/api/v0.1/countries/population/cities/filter"
 
         payload = {"limit": 30, "order":"dsc","orderBy": "populationCounts","country": "australia"}
@@ -37,7 +35,7 @@ class Extract():
             print(response)
 
 #this extract forecast data for the next 7 days
-    def extract_weather_forecast(self, key):
+    def extract_weather_forecast(key):
         df_forecast = None
         get_cities = Extract.extract_cities()
         cities = get_cities['city'].tolist()
@@ -53,25 +51,34 @@ class Extract():
             response = requests.get(base_url, params=params, headers=headers)
             df_city = pd.json_normalize(pd.json_normalize(response.json())["forecast.forecastday"][0])
             df_city['City_Name']=city
-            if df_forecast is None: df_forecast = df_city
-            else: df_forecast = df_forecast.append(df_city)
+            if df_forecast is None: 
+                df_forecast = df_city
+            else: 
+                df_forecast = pd.concat((df_forecast, df_city), axis = 0)
 
         return df_forecast
 
-    def extract_weather_historic(self, key, loaddate):
+    def extract_weather_historic(key, loaddate):
         df_historic = None
         get_cities = Extract.extract_cities()
         cities = get_cities['city'].tolist()
         if loaddate is None:
-            set_loaddate = dt.now().date()
+            set_loaddate = dt.now().date() - timedelta(days = 2)
             logging.info(f"Performing full extract from {set_loaddate}")
         else:
-            set_loaddate = loaddate
-            logging.info(f"Performing extract from {set_loaddate}")
-        
-        for i in range(50):
-            get_time = set_loaddate - timedelta(days = i)
-            date = get_time.strftime("%Y-%m-%d")
+            set_loaddate = dt.strptime(loaddate, "%Y-%m-%d") + timedelta(days = 1)
+            logging.info(f"Performing extract from {loaddate}")
+
+        i = 0
+        while set_loaddate < dt.now().date():
+            print(set_loaddate)
+            print('----------------------')  
+            print(dt.now().date())
+            print('----------------------')      
+
+            # get_time = set_loaddate + timedelta(days = i)            
+            # date = get_time.strftime("%Y-%m-%d")
+            date = set_loaddate.strftime("%Y-%m-%d")
             for city in cities:
                 params = {
                     "dt": date,
@@ -84,11 +91,18 @@ class Extract():
                             "key": key
                         }
                 response = requests.get(base_url, params=params, headers=headers)
+                time.sleep(0.1)
+                
 
                 df_city = pd.json_normalize(pd.json_normalize(response.json())["forecast.forecastday"][0])
                 df_city['City_Name']=city
-                if df_historic is None: df_historic = df_city
-                else: df_historic = df_historic.append(df_city)
+                if df_historic is None: 
+                    df_historic = df_city
+                else: 
+                    df_historic = pd.concat((df_historic, df_city), axis = 0)
+            
+            i+=1
+            set_loaddate = set_loaddate + timedelta(days = i)
 
         return df_historic
 
@@ -96,7 +110,7 @@ class Extract():
     We get our last updated and incremental value log files form S3 Bucket. 
     """
 
-    def get_incremental_value(self, bucket, aws_accessid, awssecretkey, regionname, filename):
+    def get_incremental_value(bucket, aws_accessid, awssecretkey, regionname, filename):
         bucket=bucket
         file_name=filename
         s3 = client('s3', 
@@ -119,7 +133,7 @@ class Extract():
         else:
             logging.error(f"Request to get object from S3 has failed. Status - {status}")
 
-    def upsert_incremental_log(self, bucket, aws_accessid, awssecretkey, regionname, filename, incremental_value)->bool:
+    def upsert_incremental_log(bucket, aws_accessid, awssecretkey, regionname, filename, incremental_value)->bool:
         bucket=bucket
         file_name=filename
         s3 = client('s3', 
@@ -138,8 +152,8 @@ class Extract():
                         get_that_file = s3.get_object(Bucket=bucket, Key=file_name)
                         df_existing_log = pd.read_csv(get_that_file.get("Body"))
                         df_incremental_log = pd.DataFrame(data={
-                        "log_date": dt.now().strftime("%Y-%m-%d"), 
-                        "incremental_value": incremental_value})
+                        "log_date":[dt.now().strftime("%Y-%m-%d")], 
+                        "incremental_value": [incremental_value]})
                         df_updated_incremental_log = pd.concat([df_existing_log,df_incremental_log])
                         df_updated_incremental_log.to_csv(file_name, index=False)
                         write_into_s3 = s3.upload_file(file_name, Bucket=bucket, Key=file_name)
@@ -150,8 +164,8 @@ class Extract():
                                 
                 else: 
                     df_incremental_log = pd.DataFrame(data={
-                    "log_date": dt.now().strftime("%Y-%m-%d"), 
-                    "incremental_value": incremental_value})
+                    "log_date": [dt.now().strftime("%Y-%m-%d")], 
+                    "incremental_value": [incremental_value]})
                     df_updated_incremental_log = pd.concat([df_existing_log,df_incremental_log])
                     df_updated_incremental_log.to_csv(file_name, index=False)
                     try:
@@ -164,7 +178,7 @@ class Extract():
 
         return True
 
-    def extract_from_api (self, table_name, key, bucket, filename, aws_accessid, awssecretkey, regionname)->pd.DataFrame:
+    def extract_from_api (table_name, key, bucket, filename, aws_accessid, awssecretkey, regionname)->pd.DataFrame:
         try:
             if table_name == "raw_cities":
                 df = Extract.extract_cities()
@@ -176,7 +190,7 @@ class Extract():
                 latest_date = Extract.get_incremental_value(bucket=bucket, aws_accessid=aws_accessid, awssecretkey=awssecretkey, regionname=regionname, filename=filename)
                 extracted = Extract.extract_weather_historic(key, latest_date)
                 df = extracted
-                incremental_date = str(df["date"][df["date"]== df["date"].min()].values[0])
+                incremental_date = str(df["date"][df["date"]== df["date"].max()].values[0])
                 Extract.upsert_incremental_log(bucket=bucket, aws_accessid=aws_accessid, awssecretkey=awssecretkey,filename=filename, regionname=regionname, incremental_value = incremental_date)
                 logging.info(f"Successfully extracted table: {table_name}, rows extracted: {len(df)}")
             else:
