@@ -59,29 +59,33 @@ class Extract():
         return df_forecast
 
     def extract_weather_historic(key, loaddate):
+        # print(loaddate)
         df_historic = None
         get_cities = Extract.extract_cities()
         cities = get_cities['city'].tolist()
+        today_date = dt.now()
+        # today_date = dt.strptime('2022-10-12', "%Y-%m-%d")
         if loaddate is None:
-            set_loaddate = dt.now().date() - timedelta(days = 2)
+            set_loaddate = today_date - timedelta(days = 2)
             logging.info(f"Performing full extract from {set_loaddate}")
         else:
+            # set_loaddate = dt.str (loaddate) + timedelta(days = 1)
             set_loaddate = dt.strptime(loaddate, "%Y-%m-%d") + timedelta(days = 1)
-            logging.info(f"Performing extract from {loaddate}")
+            logging.info(f"Performing extract from {set_loaddate}")
 
-        i = 0
-        while set_loaddate < dt.now().date():
-            print(set_loaddate)
-            print('----------------------')  
-            print(dt.now().date())
-            print('----------------------')      
+        print(f'set_loaddate_type: {type(set_loaddate.date())} | set_loaddate: {set_loaddate.date()} | now: {today_date.date()}')
+        print('---------------------------------------------------------')
+
+        while set_loaddate.date() < today_date.date():
+            
+            print(f'set_loaddate_type: {type(set_loaddate.date())} | set_loaddate: {set_loaddate.date()} | now: {today_date.date()}')  
 
             # get_time = set_loaddate + timedelta(days = i)            
             # date = get_time.strftime("%Y-%m-%d")
-            date = set_loaddate.strftime("%Y-%m-%d")
+            date_string = set_loaddate.strftime("%Y-%m-%d")
             for city in cities:
                 params = {
-                    "dt": date,
+                    "dt": date_string,
                     "q":city
                 }
 
@@ -90,6 +94,7 @@ class Extract():
                 headers = {
                             "key": key
                         }
+                print(date_string)
                 response = requests.get(base_url, params=params, headers=headers)
                 time.sleep(0.1)
                 
@@ -101,8 +106,8 @@ class Extract():
                 else: 
                     df_historic = pd.concat((df_historic, df_city), axis = 0)
             
-            i+=1
-            set_loaddate = set_loaddate + timedelta(days = i)
+            # Increment date for next api call
+            set_loaddate = set_loaddate + timedelta(days = 1)
 
         return df_historic
 

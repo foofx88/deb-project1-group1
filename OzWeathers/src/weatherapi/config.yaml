@@ -1,4 +1,8 @@
 extract:
+  cities_api_url: 'https://countriesnow.space/api/v0.1/countries/population/cities/filter'
+  cities_api_country: 'australia'
+  weather_api_historic_url: 'http://api.weatherapi.com/v1/history.json'
+  weather_api_forecast_url: 'http://api.weatherapi.com/v1/forecast.json?aqi=no&alerts=no'
   aws_bucket:  'ozweather-logs'
   aws_log_file: 'historic_logs.csv'
 transform: 
