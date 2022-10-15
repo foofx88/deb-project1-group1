@@ -3,8 +3,8 @@ extract:
   cities_api_country: 'australia'
   weather_api_historic_url: 'http://api.weatherapi.com/v1/history.json'
   weather_api_forecast_url: 'http://api.weatherapi.com/v1/forecast.json?aqi=no&alerts=no'
-  aws_bucket:  'ozweather-logs'
-  aws_log_file: 'historic_logs.csv'
+  aws_bucket:  'ozweatherapi'
+  aws_log_file: 'logs/historic_logs.csv'
 transform: 
   model_path: 'weatherapi/models/transform'
 meta: 

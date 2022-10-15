@@ -1,10 +1,9 @@
-from sqlalchemy import Integer, String, DateTime, Boolean, BigInteger, Numeric
-from sqlalchemy import Table, Column, Integer, String, MetaData, Float, JSON 
-import jinja2 as j2 
+from sqlalchemy import String, DateTime, Boolean, BigInteger, Numeric
+from sqlalchemy import Table, Column, Integer, String, MetaData
+from sqlalchemy.dialects import postgresql
 import pandas as pd
 import numpy as np
 import logging 
-from sqlalchemy.dialects import postgresql
 
 class Load():
    
