@@ -11,12 +11,13 @@ pd.options.mode.chained_assignment = None
 
 class Extract():
 
-    def __init__(self, table_name:str, cities_api_url:str=None, cities_api_country:str=None, weather_api_url:str=None, weather_api_key:str=None, aws_bucket:str=None, aws_access_id:str=None, aws_secrect_key:str=None, aws_region:str=None, aws_log_file:str=None):
+    def __init__(self, table_name:str, cities_api_url:str=None, cities_api_country:str=None, weather_api_url:str=None, weather_api_key:str=None, days_back:int=None, aws_bucket:str=None, aws_access_id:str=None, aws_secrect_key:str=None, aws_region:str=None, aws_log_file:str=None):
         self.table_name = table_name        
         self.cities_api_url = cities_api_url
         self.cities_api_country = cities_api_country
         self.weatehr_api_url = weather_api_url
-        self.weather_api_key = weather_api_key   
+        self.weather_api_key = weather_api_key 
+        self.days_back = days_back  
         self.aws_bucket = aws_bucket
         self.aws_access_id = aws_access_id
         self.aws_secret_key = aws_secrect_key
@@ -43,14 +44,14 @@ class Extract():
         else: 
             logging.error(response)
 
-    def _extract_weather_historic(self, cities_api_url, country, weather_api_url, weather_api_key, loaddate)->pd.DataFrame:
+    def _extract_weather_historic(self, cities_api_url, country, weather_api_url, weather_api_key, days_back, loaddate)->pd.DataFrame:
 
         df_historic = pd.DataFrame()
         get_cities = self._extract_cities(url=cities_api_url, country=country)
         cities = get_cities['city'].tolist()
         today_date = dt.now()
         if loaddate is None:
-            set_loaddate = today_date - timedelta(days = 90)
+            set_loaddate = today_date - timedelta(days = days_back)
             logging.info(f"Performing full extract from {set_loaddate}")
         else:
             set_loaddate = dt.strptime(loaddate, "%Y-%m-%d") + timedelta(days = 1)
@@ -191,7 +192,7 @@ class Extract():
             elif self.table_name =="raw_historic":
 
                 latest_date = self._get_incremental_value(aws_bucket=self.aws_bucket, aws_access_id=self.aws_access_id, aws_secret_key=self.aws_secret_key, aws_region=self.aws_region, aws_log_file=self.aws_log_file)
-                extracted = self._extract_weather_historic(cities_api_url=self.cities_api_url, country=self.cities_api_country, weather_api_url=self.weatehr_api_url, weather_api_key=self.weather_api_key, loaddate=latest_date)
+                extracted = self._extract_weather_historic(cities_api_url=self.cities_api_url, country=self.cities_api_country, weather_api_url=self.weatehr_api_url, weather_api_key=self.weather_api_key, days_back=self.days_back, loaddate=latest_date)
                 df = extracted
                 
                 if len(df) > 0:
