@@ -130,17 +130,17 @@ Run main weatherapi_pipeline.py
 <h2 id="theprocess">How it's Done</h2>
 <p> 
 We built an ELTL pipeline with an Extract and Load Class without the @static method.
-<img src="https://github.com/foofx88/deb-project1-group1/snips/without_static_method.PNG" alt="No static method was used" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/without_static_method.PNG" alt="No static method was used" width="60%" height="60%"> 
 We did not utilise a Extract_load_pipeline but we have incorporate that into our main pipeline.
 In other words, there are only dag nodes for the load and transform classes. 
-<img src="https://github.com/foofx88/deb-project1-group1/snips/dag(extract).PNG" alt="DAG Extract" width="60%" height="60%"> 
-<img src="https://github.com/foofx88/deb-project1-group1/snips/dag(load_transform).PNG" alt="DAG Load and Transform" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="DAG Extract" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(load_transform).PNG" alt="DAG Load and Transform" width="60%" height="60%"> 
 
 <h3 id="sad">Solution Architecture Diagram</h3>
-<img src="https://github.com/foofx88/deb-project1-group1/snips/SAD_Ozweathers.PNG" alt="Solution Architecture Diagram" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/SAD_Ozweathers.PNG" alt="Solution Architecture Diagram" width="60%" height="60%"> 
 
 <h3 id="vat">View all tables</h3>
-<img src="https://github.com/foofx88/deb-project1-group1/snips/dag(extract).PNG" alt="View All Tables" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="View All Tables" width="60%" height="60%"> 
 </p>
 
 <hr style="background:#3944BC;">
@@ -214,14 +214,14 @@ Current iteration docker image is built and pushed onto ECR and task instance cr
 <ul> 
   <li>Never underestimate how long it will take to troubleshoot an error. And when it comes to testing and troubleshooting, print() helps!</li>
   <li>Always incorporate good error catching <br>
-  <img src="https://github.com/foofx88/deb-project1-group1/snips/error_catching.PNG" alt="Error Catching" width="60%" height="60%">  </li>
+  <img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/error_catching.PNG" alt="Error Catching" width="60%" height="60%">  </li>
   <li>We need to incorporate S3 List object on the get_incremental_value function as Boto3 doesnt provide a response if the key is not present/not the right name.</li>
   <li>The current uses boto3 client to perform function which requires user credentials. Can possibly be using read with the right S3 policy. </li>
   <li>Incremental value currently written during the data extract, however, if the process fails, the value will still be written to the logs. Ideally, this should happen after the upsert to database. </li>
   <li>When a table is using the overwrite methods, there may be a timing issue where the table is not dropped fast enough before the new creation.</li>
   <li>Figure out Metadatalogging, why it stopped after we've uploaded onto EC2. Identify a way to incorporate local timezone to the logs</li>
   <li>Noticed an issue when reading from RDS, even when the table exists and we know that there are data, querying from PgAdmin will not return any results initially, then in the span of a minute, the table columns exists and so are the data <br>
-  <img src="https://github.com/foofx88/deb-project1-group1/snips/database_issue.gif" alt="Phantom Table" width="60%" height="60%">  </li>
+  <img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/database_issue.gif" alt="Phantom Table" width="60%" height="60%">  </li>
 </ul>
 
 <b>What have we learned while using Docker:</b> 
