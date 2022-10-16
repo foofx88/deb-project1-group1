@@ -42,6 +42,7 @@ def run_pipeline():
     aws_access_id = os.environ.get('aws_access_id')  
     aws_secret_key = os.environ.get('aws_secret_key')
     aws_region = os.environ.get('aws_region')
+    days_back = int(os.environ.get('days_back'))
 
     # The below is for confriming the .env file is read correctly
     # print(f'targer_db_user: {target_db_user}')
@@ -51,7 +52,8 @@ def run_pipeline():
     # print(f'weather_api_key: {weather_api_key}')    
     # print(f'aws_access_id: {aws_access_id}')    
     # print(f'aws_secret_key: {aws_secret_key}')    
-    # print(f'aws_region: {aws_region}')        
+    # print(f'aws_region: {aws_region}')
+    # print(f'days_back: {days_back}')         
 
     logging.info("Creating target database engine")
     # set up target db engine     
@@ -82,7 +84,7 @@ def run_pipeline():
 
         logging.info("Running extract to get historic weather df")
         # Extract historic weather data
-        historic_object = Extract(table_name='raw_historic', cities_api_url=cities_api_url, cities_api_country=cities_api_country, weather_api_url=weather_api_historic_url, weather_api_key=weather_api_key, aws_bucket=aws_bucket, aws_access_id=aws_access_id, aws_secrect_key=aws_secret_key, aws_region=aws_region, aws_log_file=aws_log_file)
+        historic_object = Extract(table_name='raw_historic', cities_api_url=cities_api_url, cities_api_country=cities_api_country, weather_api_url=weather_api_historic_url, weather_api_key=weather_api_key, days_back=days_back, aws_bucket=aws_bucket, aws_access_id=aws_access_id, aws_secrect_key=aws_secret_key, aws_region=aws_region, aws_log_file=aws_log_file)
         historic_df = historic_object.run()
 
         print(f'historic_df type: {type(historic_df)}')
