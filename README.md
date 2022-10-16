@@ -290,4 +290,4 @@ Current iteration docker image is built and pushed onto ECR and task instance cr
 <i>This was the First project for the ETL part of the course in the <a href="https://www.dataengineercamp.com">Data Engineering Camp</a>.</i> <br>
 <i style="font-size:10px;">No werewolves were harmed in the process of getting this dataset.</i>
 
-<a href="#top"><p style="text-align:right">Go back up🔼<p></a>
+<a href="#top"><p>Go back up🔼<p></a>
