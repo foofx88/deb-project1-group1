@@ -129,18 +129,22 @@ Run main weatherapi_pipeline.py
 <!-- THE WHOLE PROCESS OF THE PROJECT -->
 <h2 id="theprocess">How it's Done</h2>
 <p> 
-We built an ELTL pipeline with an Extract and Load Class without the @static method.
-<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/without_static_method.PNG" alt="No static method was used" width="60%" height="60%"> 
+We built an ELTL pipeline with an Extract and Load Class without the @static method.<br>
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/without_static_method.PNG" alt="No static method was used" width="100%"> <br>
 We did not utilise a Extract_load_pipeline but we have incorporate that into our main pipeline.
-In other words, there are only dag nodes for the load and transform classes. 
-<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="DAG Extract" width="60%" height="60%"> 
-<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(load_transform).PNG" alt="DAG Load and Transform" width="60%" height="60%"> 
+In other words, there are only dag nodes for the load and transform classes. <br>
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="DAG Extract" width="100%"> <br>
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(load_transform).PNG" alt="DAG Load and Transform" width="100%"> <br>
+
+<hr style="background:#3944BC;">
 
 <h3 id="sad">Solution Architecture Diagram</h3>
-<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/SAD_Ozweathers.PNG" alt="Solution Architecture Diagram" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/SAD_Ozweathers.png" alt="Solution Architecture Diagram" width="100%"> 
+
+<hr style="background:#3944BC;">
 
 <h3 id="vat">View all tables</h3>
-<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="View All Tables" width="60%" height="60%"> 
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/alltables.png" alt="View All Tables" width="100%"> 
 </p>
 
 <hr style="background:#3944BC;">
