@@ -49,9 +49,8 @@ class Extract():
         get_cities = self._extract_cities(url=cities_api_url, country=country)
         cities = get_cities['city'].tolist()
         today_date = dt.now()
-        # today_date = dt.strptime('2022-10-14', "%Y-%m-%d")
         if loaddate is None:
-            set_loaddate = today_date - timedelta(days = 2)
+            set_loaddate = today_date - timedelta(days = 90)
             logging.info(f"Performing full extract from {set_loaddate}")
         else:
             set_loaddate = dt.strptime(loaddate, "%Y-%m-%d") + timedelta(days = 1)
@@ -120,12 +119,13 @@ class Extract():
     """
     
     def _get_incremental_value(self, aws_bucket, aws_access_id, aws_secret_key, aws_region, aws_log_file):
-        
+
         s3 = client('s3', 
             aws_access_key_id = aws_access_id,
             aws_secret_access_key= aws_secret_key,
             region_name= aws_region   
             )
+
         response = s3.get_object(Bucket=aws_bucket, Key=aws_log_file)
         status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
         
@@ -178,7 +178,7 @@ class Extract():
         return True
 
     def run(self)->pd.DataFrame:
-        
+
         try:
             if self.table_name == "raw_cities":
                 df = self._extract_cities(url=self.cities_api_url, country=self.cities_api_country)
@@ -188,7 +188,8 @@ class Extract():
                 df= self._extract_weather_forecast(cities_api_url=self.cities_api_url, country=self.cities_api_country, weather_api_url=self.weatehr_api_url, weather_api_key=self.weather_api_key)
                 logging.info(f"Successfully extracted table: {self.table_name}, rows extracted: {len(df)}")
                 
-            elif self.table_name =="raw_historic":                
+            elif self.table_name =="raw_historic":
+
                 latest_date = self._get_incremental_value(aws_bucket=self.aws_bucket, aws_access_id=self.aws_access_id, aws_secret_key=self.aws_secret_key, aws_region=self.aws_region, aws_log_file=self.aws_log_file)
                 extracted = self._extract_weather_historic(cities_api_url=self.cities_api_url, country=self.cities_api_country, weather_api_url=self.weatehr_api_url, weather_api_key=self.weather_api_key, loaddate=latest_date)
                 df = extracted

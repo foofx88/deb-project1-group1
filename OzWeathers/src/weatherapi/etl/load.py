@@ -4,6 +4,7 @@ from sqlalchemy.dialects import postgresql
 import pandas as pd
 import numpy as np
 import logging 
+import time
 
 class Load():
    
@@ -109,6 +110,7 @@ class Load():
     def run(self):
         if self.load_method == 'overwrite':
             self._overwrite_to_database(df=self.df, table_name=self.table_name, engine=self.engine)
+            time.sleep(0.5) # Added to try pause before doing next overwrite call
         elif self.load_method == 'upsert':
             self._upsert_to_database(df=self.df, table_name=self.table_name, key_columns=self.key_columns, engine=self.engine, chunksize=self.chunksize)
         

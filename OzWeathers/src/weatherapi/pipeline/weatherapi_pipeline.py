@@ -34,27 +34,28 @@ def run_pipeline():
     weather_api_forecast_url = config['extract']['weather_api_forecast_url']
 
     logging.info("Getting env variables")       
-    db_user = os.environ.get("source_db_user")
-    db_password = os.environ.get("source_db_password")
-    db_server_name = os.environ.get("source_db_server_name")
-    db_database_name = os.environ.get("source_db_database_name") 
-    db_user = os.environ.get("target_db_user")
-    db_password = os.environ.get("target_db_password")
-    db_server_name = os.environ.get("target_db_server_name")
-    db_database_name = os.environ.get("target_db_database_name")    
+    target_db_user = os.environ.get("target_db_user")
+    target_db_password = os.environ.get("target_db_password")
+    target_db_server_name = os.environ.get("target_db_server_name")
+    target_db_database_name = os.environ.get("target_db_database_name")    
     weather_api_key = os.environ.get('weather_api_key')
     aws_access_id = os.environ.get('aws_access_id')  
     aws_secret_key = os.environ.get('aws_secret_key')
-    aws_region = os.environ.get('aws_region')   
+    aws_region = os.environ.get('aws_region')
 
-    logging.info("Creating source database engine")
-    # set up source db engine     
-    se = PostgresDB(db_user=db_user, db_password=db_password, db_server_name=db_server_name, db_database_name=db_database_name)
-    source_engine = se.create_pg_engine()
+    # The below is for confriming the .env file is read correctly
+    # print(f'targer_db_user: {target_db_user}')
+    # print(f'targer_db_password: {target_db_password}')  
+    # print(f'targer_db_server_name: {target_db_server_name}')  
+    # print(f'targer_db_database_name: {target_db_database_name}')
+    # print(f'weather_api_key: {weather_api_key}')    
+    # print(f'aws_access_id: {aws_access_id}')    
+    # print(f'aws_secret_key: {aws_secret_key}')    
+    # print(f'aws_region: {aws_region}')        
 
     logging.info("Creating target database engine")
     # set up target db engine     
-    te = PostgresDB(db_user=db_user, db_password=db_password, db_server_name=db_server_name, db_database_name=db_database_name)
+    te = PostgresDB(db_user=target_db_user, db_password=target_db_password, db_server_name=target_db_server_name, db_database_name=target_db_database_name)
     target_engine = te.create_pg_engine()
 
     logging.info("Setting up metadata logger")
@@ -77,18 +78,23 @@ def run_pipeline():
         cities_object = Extract(table_name='raw_cities', cities_api_url=cities_api_url, cities_api_country=cities_api_country)
         cities_df = cities_object.run()
 
+        print(f'cities_df type: {type(cities_df)}')
+
         logging.info("Running extract to get historic weather df")
         # Extract historic weather data
         historic_object = Extract(table_name='raw_historic', cities_api_url=cities_api_url, cities_api_country=cities_api_country, weather_api_url=weather_api_historic_url, weather_api_key=weather_api_key, aws_bucket=aws_bucket, aws_access_id=aws_access_id, aws_secrect_key=aws_secret_key, aws_region=aws_region, aws_log_file=aws_log_file)
         historic_df = historic_object.run()
+
+        print(f'historic_df type: {type(historic_df)}')
 
         logging.info("Running extract to get forecast weather df")
         # Extract forecast weather data
         forecast_object = Extract(table_name='raw_forecast', cities_api_url=cities_api_url, cities_api_country=cities_api_country, weather_api_url=weather_api_forecast_url, weather_api_key=weather_api_key)
         forecast_df = forecast_object.run()
 
+        print(f'forecast_df type: {type(forecast_df)}')
+
         if historic_df.empty:
-        # if len(historic_df) == 0:
             tprint('Oh Shit!')
             print('historic_df is empty')
         elif forecast_df.empty:
@@ -101,7 +107,7 @@ def run_pipeline():
 
         logging.info("Creating load historic node")
         # Load historic weather data
-        node_load_historic = Load(df=historic_df, engine=target_engine, table_name='raw_historic', load_method='upsert', chunksize=5, key_columns=['City_Name', 'date'])
+        node_load_historic = Load(df=historic_df, engine=target_engine, table_name='raw_historic', load_method='upsert', chunksize=50, key_columns=['City_Name', 'date'])
 
         logging.info("Creating load forecast nodes")
         # Load forecast weather data
