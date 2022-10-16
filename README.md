@@ -158,10 +158,7 @@ The <i>extract_cities</i> funciton gets the top 10 most populated cities in Aust
 
 <b><i>"We will get today's historic data tomorrow when it becomes yesterday's. - FX</i></b>  
 
-<br>
-
 <hr style="background:#3944BC;">
-
 
 <h2 id="load">Load</h2>
 
@@ -169,7 +166,6 @@ The <i>extract_cities</i> funciton gets the top 10 most populated cities in Aust
 Extracted data are loaded into AWS RDS PostgresSQL database with the help of SQLAlchemy.
 We have also upserting extracted raw historic data in chunks. As the data is extracted daily, the cities and forecast table would be overwritten to always get the most updated data whereas the raw_historic is an upsert.
 </p>
-
 
 <hr style="background:#3944BC;">
 
