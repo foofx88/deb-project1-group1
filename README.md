@@ -135,7 +135,9 @@ We did not utilise a Extract_load_pipeline but we have incorporate that into our
 In other words, there are only dag nodes for the load and transform classes. <br>
 <img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(extract).PNG" alt="DAG Extract" width="100%"> <br>
 <img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/dag(load_transform).PNG" alt="DAG Load and Transform" width="100%"> <br>
-
+The pipeline built into a Docker Image, hosted on AWS ECR and task instance run on EC2. Successful runs can be seen on the CloudWatch Logs.
+<img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/cloudwatchlogs.PNG" alt="Cloudwatch Logs" width="100%"> <br>
+  
 <hr style="background:#3944BC;">
 
 <h3 id="sad">Solution Architecture Diagram</h3>
