@@ -222,6 +222,7 @@ Current iteration docker image is built and pushed onto ECR and task instance cr
   <li>Incremental value currently written during the data extract, however, if the process fails, the value will still be written to the logs. Ideally, this should happen after the upsert to database. </li>
   <li>When a table is using the overwrite methods, there may be a timing issue where the table is not dropped fast enough before the new creation.</li>
   <li>Figure out Metadatalogging, why it stopped after we've uploaded onto EC2. Identify a way to incorporate local timezone to the logs</li>
+  <li>Weather API Call gets Cities from the other Cities API call. Ideally, we would want the extract to read from Cities Table and then call the Weather API</li>
   <li>Noticed an issue when reading from RDS, even when the table exists and we know that there are data, querying from PgAdmin will not return any results initially, then in the span of a minute, the table columns exists and so are the data <br>
   <img src="https://github.com/foofx88/deb-project1-group1/blob/main/snips/database_issue.gif" alt="Phantom Table" width="60%" height="60%">  </li>
 </ul>
